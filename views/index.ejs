@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Shield</title>
+    <link rel="stylesheet" href="/css/styles.css"> 
+    
+</head>
+<body>
+    <div class="main-layout">
+        
+        <section class="app-container">
+            <div class="container">
+                <h1>☀️ UV Shield</h1>
+                <p>Enter your city to check if you need sunscreen today.</p>
+
+                <form action="/get-uv" method="POST">
+                    <input type="text" name="city" placeholder="e.g. Mumbai" required>
+                    <button type="submit">Check</button>
+                </form>
+
+                <% if (error) { %>
+                    <div class="error"><%= error %></div>
+                <% } %>
+
+                <% if (data) { %>
+                    <div class="result-card <%= colorClass %>">
+                        <h2><%= city %></h2>
+                        <div class="uv-number"><%= data.uv.toFixed(1) %></div>
+                        <p class="advice"><strong>Advice:</strong> <%= recommendation %></p>
+                        <hr>
+                        <p>Ozone Level: <%= data.ozone %> DU</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <aside class="info-sidebar">
+            <div class="info-card">
+                <h3>Why check UV?</h3>
+                <p>UV radiation is invisible but can cause skin damage in as little as 15 minutes.</p>
+            </div>
+            <div class="info-card">
+                <h3>Pro-Tip 🧴</h3>
+                <p>Apply sunscreen 20 minutes before going outside for maximum protection.</p>
+            </div>
+            <div class="info-card">
+                <h3>Stay Hydrated 💧</h3>
+                <p>High UV often comes with high heat. Drink plenty of water!</p>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>© 2026 UV Shield | Data by OpenUV & Nominatim</p>
+    </footer>
+    <script>
+    const form = document.querySelector('form');
+    const btn = document.querySelector('button');
+    form.addEventListener('submit', () => {
+        btn.innerText = 'Checking...';
+        btn.style.opacity = '0.7';
+        btn.disabled = true;
+    });
+    </script>
+</body>
+</html>
