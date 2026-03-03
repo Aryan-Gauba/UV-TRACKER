@@ -1,9 +1,18 @@
 import express from "express";
 import axios from "axios";
 import "dotenv/config";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = 3000;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Tell Express where to find your folders using absolute paths
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Your OpenUV API Key goes here
 const OPENUV_KEY = process.env.OPENUV_KEY;
@@ -73,6 +82,8 @@ app.post("/get-uv", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server running on http://localhost:${port}`);
+// });
+
+export default app;
