@@ -1,4 +1,4 @@
-### ☀️ UV Shield & Tracker
+# ☀️ UV Shield & Tracker
 A dynamic web application that provides real-time Ultraviolet (UV) radiation data based on the user's current location. By integrating weather and geolocation services, the app delivers accurate exposure risks and personalized safety recommendations to help prevent sun damage.
 
 ## 🚀 Features
