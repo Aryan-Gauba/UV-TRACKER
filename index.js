@@ -14,12 +14,12 @@ const __dirname = path.dirname(__filename);
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Your OpenUV API Key goes here
-const OPENUV_KEY = process.env.OPENUV_KEY;
-
-app.use(express.static("public"));
+// Express middleware setup
 app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
+
+// Your OpenUV API Key goes here
+const OPENUV_KEY = process.env.OPENUV_KEY;
 
 app.get("/", (req, res) => {
     res.render("index", { data: null, recommendation: null, city: null, error: null });
@@ -29,15 +29,29 @@ app.post("/get-uv", async (req, res) => {
     const city = req.body.city;
 
     try {
+        // ✨ VALIDATION 1: Block purely numeric inputs upfront (e.g., "9898")
+        if (/^\d+$/.test(city.trim())) {
+            throw new Error("Numbers are not valid city names.");
+        }
+
         // STEP 1: Convert city name to Lat/Lng using Nominatim (Free, no key needed)
         const geoResponse = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${city}`, {
             headers: { 'User-Agent': 'MyCapstoneProject/1.0' }
         });        
+        
         if (geoResponse.data.length === 0) {
-            throw new Error("City not found");
+            throw new Error("City not found.");
         }
 
-        const { lat, lon } = geoResponse.data[0];
+        const topResult = geoResponse.data[0];
+
+        // ✨ VALIDATION 2: Filter out non-city geographical results (like random zipcodes, buildings, or highways)
+        const validTypes = ["city", "town", "village", "administrative", "state", "country"];
+        if (topResult.class === "place" && !validTypes.includes(topResult.type)) {
+            throw new Error("Please enter a valid city or town name.");
+        }
+
+        const { lat, lon } = topResult;
 
         // STEP 2: Get UV data from OpenUV
         const uvResponse = await axios.get(`https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lon}`, {
@@ -73,9 +87,16 @@ app.post("/get-uv", async (req, res) => {
 
     } catch (error) {
         console.error(error.message);
+        
+        // ✨ SMART ERROR MESSAGE: If it's our custom validation error, show it! Otherwise, show the default error.
+        let displayError = "Could not find that city or API limit reached. Try again!";
+        if (error.message === "Numbers are not valid city names." || error.message === "Please enter a valid city or town name." || error.message === "City not found.") {
+            displayError = error.message;
+        }
+
         res.render("index", { 
             data: null, 
-            error: "Could not find that city or API limit reached. Try again!",
+            error: displayError,
             recommendation: null,
             city: null
         });

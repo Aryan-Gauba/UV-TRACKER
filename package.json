@@ -1,7 +1,7 @@
 {
   "name": "uv-tracker-capstone",
   "version": "1.0.0",
-  "description": "",
+  "description": "A dynamic web application that provides real-time Ultraviolet (UV) radiation data based on the user's current location. By integrating weather and geolocation services, the app delivers accurate exposure risks and personalized safety recommendations to help prevent sun damage.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +14,15 @@
     "axios": "^1.13.6",
     "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
-    "express": "^5.2.1"
-  }
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryan-Gauba/UV-TRACKER.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Aryan-Gauba/UV-TRACKER/issues"
+  },
+  "homepage": "https://github.com/Aryan-Gauba/UV-TRACKER#readme"
 }
